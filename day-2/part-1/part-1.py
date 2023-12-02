@@ -5,11 +5,13 @@ MAX_PIECES_BY_COLOR = {
 }
 
 def read_raw_data_info(line):
-    sanitized_line = line.replace(";", "").replace(",", "")
+    sanitized_line = line.replace(";", ",")
     
     game_id, results = sanitized_line.split(":")
-    game_id = game_id.replace("Game ", "")
-    results = results.strip().split(" ")
+    game_id = game_id.strip().replace("Game", "")
+    
+    results = results.strip().split(",")
+    results = [result.strip().split(" ") for result in results]
     
     return int(game_id), results
 
@@ -17,10 +19,9 @@ def parse_game_info(line):
     results_by_color = {"red": [], "green": [], "blue": []}
     game_id, results = read_raw_data_info(line)
 
-    for i in range(int(len(results)/2)):
-        result = int(results[2*i])
-        color = results[2*i + 1]
-        results_by_color[color].append(result)
+    for result in results:
+        value, color = result
+        results_by_color[color].append(int(value))
 
     return game_id, results_by_color
 
