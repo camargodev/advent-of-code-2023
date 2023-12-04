@@ -7,13 +7,11 @@ SYMBOL = 'S'
 class Engine:
     def run(self, lines):
         symbol_coords = set()
-        for line_index in range(len(lines)):
-            line = re.sub("[^0-9\.\n]", SYMBOL, lines[line_index])
-            for column_index in range(len(line)):
-                if line[column_index] != SYMBOL:
-                    continue
-                for adjacent_coord in AdjacentCellsCalculator.calculate(column_index, line_index):
-                    symbol_coords.add(adjacent_coord)
+        for row_index, raw_row in enumerate(lines):
+            row = re.sub("[^0-9\.\n]", SYMBOL, raw_row)
+            for column_index, cell in enumerate(row):
+                if cell == SYMBOL:
+                    symbol_coords.update(AdjacentCellsCalculator.calculate(column_index, row_index))
 
         numbers = NumbersFinder().find(lines)
     

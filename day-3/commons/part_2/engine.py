@@ -6,12 +6,10 @@ GEAR = '*'
 class Engine:
     def run(self, lines):
         gears = set()
-        for row_index in range(len(lines)):
-            line = lines[row_index]
-            for column_index in range(len(line)):
-                if line[column_index] != GEAR:
-                    continue
-                gears.add(Gear(row_index, column_index))
+        for row_index, row in enumerate(lines):
+            for column_index, cell in enumerate(row):
+                if cell == GEAR:
+                    gears.add(Gear(row_index, column_index))
 
         numbers = NumbersFinder().find(lines)
 
