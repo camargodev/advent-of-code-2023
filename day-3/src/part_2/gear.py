@@ -1,4 +1,4 @@
-from commons.adjacent_cells_calculator import AdjacentCellsCalculator
+from src.commons.adjacent_cells_calculator import AdjacentCellsCalculator
 
 class Gear:
     def __init__(self, row, column):

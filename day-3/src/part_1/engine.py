@@ -1,6 +1,6 @@
 import re
-from commons.numbers_finder import NumbersFinder
-from commons.adjacent_cells_calculator import AdjacentCellsCalculator
+from src.commons.numbers_finder import NumbersFinder
+from src.commons.adjacent_cells_calculator import AdjacentCellsCalculator
 
 SYMBOL = 'S'
 NON_NUMERIC_OR_POINT = "[^0-9\.\n]"
