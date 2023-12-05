@@ -1,5 +1,6 @@
+from src.commons.number import Number
+
 DIGITS = [str(num) for num in range(10)]
-from commons.number import Number
 
 class NumbersFinder:
     def find(self, lines):

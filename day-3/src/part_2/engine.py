@@ -1,5 +1,5 @@
-from commons.numbers_finder import NumbersFinder
-from commons.part_2.gear import Gear
+from src.commons.numbers_finder import NumbersFinder
+from src.part_2.gear import Gear
 
 GEAR = '*'
 
