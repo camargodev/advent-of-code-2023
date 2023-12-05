@@ -2,8 +2,8 @@ import re
 from src.commons.numbers_finder import NumbersFinder
 from src.commons.adjacent_cells_calculator import AdjacentCellsCalculator
 
-SYMBOL = 'S'
-NON_NUMERIC_OR_POINT = "[^0-9\.\n]"
+STANDARD_SYMBOL = 'S'
+ANY_SYMBOL = "[^0-9\.\n]"
 
 class EngineManager:
     def run(self, lines):
@@ -21,8 +21,8 @@ class EngineManager:
     def find_symbols_coords(self, lines):
         symbol_coords = set()
         for row_index, raw_row in enumerate(lines):
-            row = re.sub(NON_NUMERIC_OR_POINT, SYMBOL, raw_row)
+            row = re.sub(ANY_SYMBOL, STANDARD_SYMBOL, raw_row)
             for column_index, cell in enumerate(row):
-                if cell == SYMBOL:
+                if cell == STANDARD_SYMBOL:
                     symbol_coords.update(AdjacentCellsCalculator.calculate(column_index, row_index))
         return symbol_coords
