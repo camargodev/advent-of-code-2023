@@ -30,14 +30,12 @@ class LowestLocationFinder:
             source_type = SEED
             current_value = seed
             while source_type != LOCATION:
-                print(source_type, current_value)
                 source_type, mappings_for_type = all_mappings[source_type]
                 for mapping_for_type in mappings_for_type:
                     mapping_range, offset = mapping_for_type
                     if current_value in mapping_range:
                         current_value += offset
                         break    
-            print(source_type, current_value)
             seed_locations.append(current_value)
 
         return min(seed_locations)
