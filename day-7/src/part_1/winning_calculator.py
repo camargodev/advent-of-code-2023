@@ -72,7 +72,6 @@ class BetManager:
         self.bets.sort(key=lambda card: card.power)
         total_winnings_for_bets = 0
         for index, bet in enumerate(self.bets):
-            print(bet.bet, index+1, bet.bid, bet.power)
             total_winnings_for_bets += bet.bid * (index+1)
         return total_winnings_for_bets
         
