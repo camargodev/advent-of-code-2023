@@ -6,10 +6,8 @@ TWO_PAIR = 3
 ONE_PAIR = 2
 HIGH_CARD = 1
 
-JOKER = "J"
-
 class AbstractBetManager:
-    def calculate_bet_type(self, bet):
+    def get_conditions_for_type(self):
         pass
     
     def get_cards_in_order(self):
