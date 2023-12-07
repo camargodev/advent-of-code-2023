@@ -1,33 +1,16 @@
 from src.commons.mapping_entities import *
 from src.commons.seed_for_location_mapper import SeedForLocationMapper
-
-SEED = "seed"
-LOCATION = "location"
-EMPTY = ""
-LINE_BREAK = "\n"
+from src.commons.mapping_info_factory import MappingInfoFactory
 
 class LowestLocationFinder:
+
+    def __init__(self):
+        self.mapping_info_factory = MappingInfoFactory()
 
     def find(self, lines):
         seeds = self.extract_seeds(lines)
 
-        mapping_info = dict()
-        for raw_line in lines[1:]:
-            line = raw_line.replace(LINE_BREAK, EMPTY)
-            if line == EMPTY:
-                last_was_empty = True
-                continue
-            if last_was_empty:
-                last_was_empty = False
-                source_type, target_type = self.get_source_and_target(line)
-                mapping_info[source_type] = MappingInfo(source_type, target_type)
-                continue
-            target, source, size = [int(str_num) for str_num in line.strip().split(" ")]
-            offset = target - source
-            start = source
-            end = source + size - 1
-            mapping_info[source_type].add_offset_range(OffsetRange(start, end, offset))
-            
+        mapping_info = self.mapping_info_factory.make(lines)            
 
         seed_locations = []
         for seed in seeds:
@@ -39,8 +22,3 @@ class LowestLocationFinder:
     def extract_seeds(self, lines):
         sanitized_line = lines[0].replace("seeds:", "")
         return [int(str_num) for str_num in sanitized_line.strip().split(" ")]
-    
-    def get_source_and_target(self, line):
-        sanitized_line = line.replace(" map:", "")
-        source, _, target = sanitized_line.split("-")
-        return source, target

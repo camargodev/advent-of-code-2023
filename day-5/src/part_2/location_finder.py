@@ -1,5 +1,6 @@
 from src.commons.mapping_entities import *
 from src.commons.seed_for_location_mapper import SeedForLocationMapper
+from src.commons.mapping_info_factory import MappingInfoFactory
 
 EMPTY = ""
 LINE_BREAK = "\n"
@@ -7,9 +8,13 @@ SEED = "seed"
 
 class LowestLocationFinder:
 
+    def __init__(self):
+        self.mapping_info_factory = MappingInfoFactory()
+
     def find(self, lines):
         seeds_ranges = self.extract_seeds(lines)
-        mapping_info_by_source, backtracked_mapping_info_by_source = self.parse_mapping_info_maps(lines)
+        mapping_info_by_source = self.mapping_info_factory.make(lines)
+        backtracked_mapping_info_by_source = self.mapping_info_factory.make_with_backtracking(lines)
 
         backtracked_range_starts = []
         for mapping_info in backtracked_mapping_info_by_source.values():
@@ -77,8 +82,3 @@ class LowestLocationFinder:
             range_size = numbered_seeds[2*i+1]
             seeds_ranges.append(range(start, start+range_size-1))
         return seeds_ranges
-    
-    def get_source_and_target(self, line):
-        sanitized_line = line.replace(" map:", "")
-        source, _, target = sanitized_line.split("-")
-        return source, target
