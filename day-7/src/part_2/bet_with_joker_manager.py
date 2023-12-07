@@ -44,19 +44,5 @@ class BetWithJokerManager(AbstractBetManager):
             return ONE_PAIR
         return HIGH_CARD
     
-    def get_cards_order(self):
-        return {
-            "J": "01",
-            "2": "02",
-            "3": "03",
-            "4": "04",
-            "5": "05",
-            "6": "06",
-            "7": "07",
-            "8": "08",
-            "9": "09",
-            "T": "10",
-            "Q": "11",
-            "K": "12",
-            "A": "13"
-        }
+    def get_cards_in_order(self):
+        return ["J", "2", "3", "4", "5", "6", "7", "8", "9", "T", "Q", "K", "A"]

@@ -22,19 +22,5 @@ class SimpleBetManager(AbstractBetManager):
             return ONE_PAIR
         return HIGH_CARD
     
-    def get_cards_order(self):
-        return {
-            "2": "01",
-            "3": "02",
-            "4": "03",
-            "5": "04",
-            "6": "05",
-            "7": "06",
-            "8": "07",
-            "9": "08",
-            "T": "09",
-            "J": "10",
-            "Q": "11",
-            "K": "12",
-            "A": "13"
-        }
+    def get_cards_in_order(self):
+        return ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]

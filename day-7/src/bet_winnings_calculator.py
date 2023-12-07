@@ -17,8 +17,10 @@ class BidForBetFactory:
         return BidForBet(bet, bid, type, power)
     
     def calculate_bet_power(self, bet):
-        power_by_card = self.bet_manager.get_cards_order();
+        cards_in_order = self.bet_manager.get_cards_in_order();
+        power_by_card = {card:str(power).zfill(2) for power, card in enumerate(cards_in_order)}
         return "".join(str(power_by_card[card]) for card in bet)
+
 
 class WinningCalculator:
     def __init__(self, bet_manager: AbstractBetManager):

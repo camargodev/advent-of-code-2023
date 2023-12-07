@@ -12,5 +12,5 @@ class AbstractBetManager:
     def calculate_bet_type(self, bet):
         pass
     
-    def get_cards_order(self):
+    def get_cards_in_order(self):
         pass
