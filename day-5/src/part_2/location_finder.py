@@ -1,9 +1,9 @@
-from src.commons.entities import *
+from src.commons.mapping_entities import *
+from src.commons.seed_for_location_mapper import SeedForLocationMapper
 
-SEED = "seed"
-LOCATION = "location"
 EMPTY = ""
 LINE_BREAK = "\n"
+SEED = "seed"
 
 class LowestLocationFinder:
 
@@ -27,22 +27,10 @@ class LowestLocationFinder:
                     is_valid_seed = True
                     break
             if is_valid_seed:
-                location = self.find_location_for_seed(mapping_info_by_source, seed)
+                location = SeedForLocationMapper.map(mapping_info_by_source, seed)
                 locations_for_valid_seeds.append(location)
                 
         return min(locations_for_valid_seeds)
-    
-    def find_location_for_seed(self, mapping_info_by_source,  seed):
-        source_type = SEED
-        current_value = seed
-        while source_type != LOCATION:
-            mapping_info = mapping_info_by_source[source_type]
-            for offset_range in mapping_info.offset_ranges:
-                if current_value in offset_range.range:
-                    current_value += offset_range.offset
-                    break    
-            source_type = mapping_info.target
-        return current_value
     
     def calculate_backtracked_offset(self, mapping_info_by_source, current_type, value):
         backtrack_target = current_type
