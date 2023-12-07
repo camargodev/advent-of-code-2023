@@ -23,8 +23,7 @@ class BidForBetFactory:
         conditions_for_type = self.bet_manager.get_conditions_for_type()
         for type, conditions in conditions_for_type.items():
             for condition in conditions:
-                result = condition(card_info)
-                if result:
+                if condition(card_info):
                     return type
         return HIGH_CARD
 
