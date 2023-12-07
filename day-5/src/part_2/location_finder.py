@@ -14,26 +14,26 @@ class LowestLocationFinder:
         mapping_info_by_source = self.mapping_info_factory.make(lines)
         backtracked_mapping_info_by_source = self.mapping_info_factory.make_with_backtracking(lines)
 
+        backtracked_range_starts = self.calculate_new_seed_ranges(seeds_ranges, backtracked_mapping_info_by_source)
+
+        locations_for_valid_seeds = []
+        for seed in backtracked_range_starts:
+            locations_for_valid_seeds.append(SeedForLocationMapper.map(mapping_info_by_source, seed))
+                
+        return min(locations_for_valid_seeds)
+    
+    def calculate_new_seed_ranges(self, seeds_ranges, backtracked_mapping_info_by_source):
         backtracked_range_starts = []
         for mapping_info in backtracked_mapping_info_by_source.values():
             mapping_info.sort_ranges()
             for range in mapping_info.offset_ranges:
                 backtracked_offset = self.calculate_backtracked_offset(backtracked_mapping_info_by_source, mapping_info.target, range.start)
                 backtracked_value = range.start + backtracked_offset
-                backtracked_range_starts.append(backtracked_value)
-
-        locations_for_valid_seeds = []
-        for seed in backtracked_range_starts:
-            is_valid_seed = False
-            for seed_range in seeds_ranges:
-                if seed in seed_range:
-                    is_valid_seed = True
-                    break
-            if is_valid_seed:
-                location = SeedForLocationMapper.map(mapping_info_by_source, seed)
-                locations_for_valid_seeds.append(location)
-                
-        return min(locations_for_valid_seeds)
+                for seed_range in seeds_ranges:
+                    if backtracked_value in seed_range:
+                        backtracked_range_starts.append(backtracked_value)
+                        break
+        return backtracked_range_starts
     
     def calculate_backtracked_offset(self, mapping_info_by_source, current_type, value):
         backtrack_target = current_type

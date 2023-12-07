@@ -10,12 +10,11 @@ class LowestLocationFinder:
     def find(self, lines):
         seeds = self.extract_seeds(lines)
 
-        mapping_info = self.mapping_info_factory.make(lines)            
+        mapping_info_by_source = self.mapping_info_factory.make(lines)            
 
         seed_locations = []
         for seed in seeds:
-            location = SeedForLocationMapper.map(mapping_info, seed)
-            seed_locations.append(location)
+            seed_locations.append(SeedForLocationMapper.map(mapping_info_by_source, seed))
 
         return min(seed_locations)
 
