@@ -5,5 +5,5 @@ class LoopDistanceCalculator:
         self.pipe_loop_finder = PipeLoopFinder()
     
     def calculate(self, lines):
-        loop_nodes = self.pipe_loop_finder.find(lines)
+        loop_nodes = set(self.pipe_loop_finder.find(lines))
         return len(loop_nodes)//2

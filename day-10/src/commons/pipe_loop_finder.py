@@ -21,12 +21,12 @@ class PipeLoopFinder:
     def find(self, lines):
         source_location = self.find_source(lines)
         current_location, last_direction = self.get_starter_after_source(lines, source_location)
-        loop_nodes = {source_location, current_location}
+        loop_nodes = [source_location, current_location]
         while current_location != source_location:
             row_idx, col_idx = current_location
             current_pipe = lines[row_idx][col_idx]
             next_pipe_location, last_direction = self.find_next_pipe(current_pipe, current_location, last_direction)
-            loop_nodes.add(next_pipe_location)
+            loop_nodes.append(next_pipe_location)
             current_location = next_pipe_location
         return loop_nodes
 
