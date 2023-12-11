@@ -25,7 +25,9 @@ class GalaxyDistanceCalculator:
                 min_y, max_y = min(galaxy_y, other_galaxy_y), max(galaxy_y, other_galaxy_y)
                 empty_rows_count = [row for row in range(min_x, max_x) if row in empty_rows]
                 empty_cols_count = [row for row in range(min_y, max_y) if row in empty_cols]
-                distance = (max_x - min_x + len(empty_rows_count)) + (max_y - min_y + len(empty_cols_count))
+                horizontal_distance = max_x - min_x + (1000000*len(empty_rows_count) - len(empty_rows_count))
+                vertical_distance = max_y - min_y + (1000000*len(empty_cols_count) - len(empty_cols_count))
+                distance = horizontal_distance + vertical_distance
                 total_distance += distance
-
+                
         return total_distance
