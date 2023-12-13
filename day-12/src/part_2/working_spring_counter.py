@@ -58,7 +58,7 @@ class WorkingSpringCounter:
         if len(pattern) < (current_num - current_num_lenght):
             return 0
         
-        if pattern == "":
+        if len(pattern) == 0:
             if len(numbers) == 1 and current_num_lenght == numbers[0]:
                 return 1
             if len(numbers) == 0 and current_num_lenght == 0:
@@ -76,9 +76,8 @@ class WorkingSpringCounter:
             if current_num_lenght == 0:
                 temp = self.process_spring_dp(pattern[1:], numbers, current_num_lenght)
             return self.process_spring_dp(pattern[1:], numbers, current_num_lenght+1) + temp
-        if current_char == EMPTY:
-            if current_num_lenght == 0:
-                return self.process_spring_dp(pattern[1:], numbers, 0)
+        if current_char == EMPTY and current_num_lenght == 0:
+            return self.process_spring_dp(pattern[1:], numbers, 0)
         if current_char == SPRING:
             return self.process_spring_dp(pattern[1:], numbers, current_num_lenght+1)
         return 0
