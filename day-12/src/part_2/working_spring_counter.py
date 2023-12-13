@@ -50,7 +50,7 @@ class WorkingSpringCounter:
         # return len(all_possible_patterns)
         return self.process_spring_dp(spring.pattern, spring.numbers)
 
-    def process_spring_dp(self, pattern, numbers, result="", characters_added=0):
+    def process_spring_dp(self, pattern, numbers, characters_added=0):
         if len(numbers) == 0:
             return 0 if SPRING in pattern else 1
 
@@ -61,34 +61,26 @@ class WorkingSpringCounter:
             return 0
         
         if pattern == "":
-            # if characters_added == 0 and numbers == []:
-            #     return 1
-            # if len(numbers) == 1 and characters_added == numbers[0]:
-            #     return 1
-
-
-            if result[-1] == SPRING:
-                if len(numbers) == 1 and characters_added == numbers[0]:
-                    return 1
-            if result[-1] == EMPTY:
-                if 0 == len(numbers) and characters_added == 0:
-                    return 1
+            if len(numbers) == 1 and characters_added == numbers[0]:
+                return 1
+            if 0 == len(numbers) and characters_added == 0:
+                return 1
             return 0
         
         is_current_num_completed = numbers[0] == characters_added
 
         if pattern[0] == MISTERY:
             if is_current_num_completed:
-                return self.process_spring_dp(pattern[1:], numbers[1:], result+EMPTY, 0)
+                return self.process_spring_dp(pattern[1:], numbers[1:], 0)
             temp = 0
             if characters_added == 0:
-                temp = self.process_spring_dp(pattern[1:], numbers, result+EMPTY, characters_added)
-            return self.process_spring_dp(pattern[1:], numbers, result+SPRING, characters_added+1) + temp
+                temp = self.process_spring_dp(pattern[1:], numbers, characters_added)
+            return self.process_spring_dp(pattern[1:], numbers, characters_added+1) + temp
         if pattern[0] == EMPTY:
             if is_current_num_completed:
-                return self.process_spring_dp(pattern[1:], numbers[1:], result+EMPTY, 0)
+                return self.process_spring_dp(pattern[1:], numbers[1:], 0)
             if characters_added == 0:
-                return self.process_spring_dp(pattern[1:], numbers, result+EMPTY, 0)
+                return self.process_spring_dp(pattern[1:], numbers, 0)
         if pattern[0] == SPRING:
-            return self.process_spring_dp(pattern[1:], numbers, result+SPRING, characters_added+1)
+            return self.process_spring_dp(pattern[1:], numbers, characters_added+1)
         return 0
