@@ -3,5 +3,5 @@ from src.part_2.working_spring_counter import WorkingSpringCounter as SecondWork
 
 if __name__ == "__main__":
     lines = [line for line in open("day-12/res/example.txt", "r")]
-    print(FirstWorkingSpringCounter().count(lines))
+    # print(FirstWorkingSpringCounter().count(lines))
     print(SecondWorkingSpringCounter().count(lines))
