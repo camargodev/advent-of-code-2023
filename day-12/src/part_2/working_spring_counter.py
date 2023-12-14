@@ -4,21 +4,13 @@ EMPTY = "."
 
 DEBUG = False
 
-class Spring:
-    def __init__(self, pattern, numbers):
-        self.pattern = pattern
-        self.numbers = numbers
-
-    def is_current_number_completed(self, num_idx, num_chars_added):
-        return self.numbers[num_idx] == num_chars_added
-
 class InputExtractor:
     def extract(self, lines):
         springs = []
         for line in lines:
             pattern, str_numbers = line.split(" ")
             numbers = [int(str_num) for str_num in str_numbers.split(",")]
-            springs.append(Spring(self.repeat_pattern(pattern), self.repeat_numbers(numbers)))
+            springs.append((self.repeat_pattern(pattern), self.repeat_numbers(numbers)))
         return springs
     
     def repeat_pattern(self, pattern):
@@ -40,15 +32,13 @@ class WorkingSpringCounter:
     def count(self, lines):
         springs = InputExtractor().extract(lines)
         spring_sum = 0
-        for spring in springs:
-            current_sum = self.process_spring(spring)
-            spring_sum += current_sum
+        for spring_input_data in springs:
+            spring_sum += self.process_spring(spring_input_data)
         return spring_sum
 
-    def process_spring(self, spring):
-        return self.process_spring_dp(spring.pattern, spring.numbers)
+    def process_spring(self, input_data):
+        pattern, numbers = input_data
 
-    def process_spring_dp(self, pattern, numbers):
         if len(numbers) == 0 and SPRING not in pattern:
             return 1
         
@@ -65,15 +55,15 @@ class WorkingSpringCounter:
         is_end_of_pattern = len(remaining_pattern) == 0
         is_number_end_separated = is_end_of_pattern or remaining_pattern[0] != SPRING
 
-        possible_results = 0
+        possible_next_steps = []
         if is_number_valid and is_number_end_separated:
-            cache_key = (remaining_pattern[1:], tuple(numbers[1:]))
-            if cache_key not in self.cache:
-                self.cache[cache_key] = self.process_spring_dp(remaining_pattern[1:], numbers[1:])
-            possible_results += self.cache[cache_key]
+            possible_next_steps.append((remaining_pattern[1:], tuple(numbers[1:])))
         if pattern[0] != SPRING:
-            cache_key = (pattern[1:], tuple(numbers))
-            if cache_key not in self.cache:
-                self.cache[cache_key] = self.process_spring_dp(pattern[1:], numbers)
-            possible_results += self.cache[cache_key]
-        return possible_results
+            possible_next_steps.append((pattern[1:], tuple(numbers)))
+
+        result_count = 0
+        for possible_next_step in possible_next_steps:
+            if possible_next_step not in self.cache:
+                self.cache[possible_next_step] = self.process_spring(possible_next_step)
+            result_count += self.cache[possible_next_step]
+        return result_count
