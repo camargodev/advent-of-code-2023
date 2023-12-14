@@ -4,104 +4,66 @@ EMPTY = "."
 
 DEBUG = False
 
-class Spring:
-    def __init__(self, pattern, numbers):
-        self.pattern = pattern
-        self.numbers = numbers
-
-    def is_current_number_completed(self, num_idx, num_chars_added):
-        return self.numbers[num_idx] == num_chars_added
-
 class InputExtractor:
     def extract(self, lines):
         springs = []
         for line in lines:
             pattern, str_numbers = line.split(" ")
             numbers = [int(str_num) for str_num in str_numbers.split(",")]
-            springs.append(Spring(pattern, numbers))
+            springs.append((self.repeat_pattern(pattern), self.repeat_numbers(numbers)))
         return springs
     
-
+    def repeat_pattern(self, pattern):
+        repeated_pattern = pattern
+        for _ in range(4):
+            repeated_pattern += MISTERY + pattern
+        return pattern
+    
+    def repeat_numbers(self, numbers):
+        repeated_numbers = []
+        for _ in range(5):
+            repeated_numbers.extend(numbers)
+        return numbers
 
 class WorkingSpringCounter:
+    def __init__(self):
+        self.cache = dict()
+
     def count(self, lines):
         springs = InputExtractor().extract(lines)
         spring_sum = 0
-        for spring in springs:
-            if DEBUG:
-                print(spring.pattern, spring.numbers)
-            possible_patterns = self.process_spring(spring)
-            spring_sum += len(possible_patterns)
-            if DEBUG:
-                print(len(possible_patterns), possible_patterns)
+        for spring_input_data in springs:
+            spring_sum += self.process_spring(spring_input_data)
         return spring_sum
-        # print(springs)
 
-    def process_spring(self, spring):
-        numbers_by_index = {idx:num for idx,num in enumerate(spring.numbers)}
-        all_possible_patterns = []
-        self.process_spring_dp(all_possible_patterns, numbers_by_index, spring, "")
-        return all_possible_patterns
-        # print("\n\n",all_possible_patterns, len(all_possible_patterns))
+    def process_spring(self, input_data):
+        pattern, numbers = input_data
 
-    def process_spring_dp(self, patterns, numbers_by_index, spring, result, current_pattern_idx=0, current_num_idx=0, characters_added=0):
-        if DEBUG:
-            print(result)
-        if current_num_idx > len(spring.numbers) or current_pattern_idx > len(spring.pattern):
-            if DEBUG:
-                print("failed because string finished")
-            return
-        if current_pattern_idx == (len(spring.pattern)):
-            if DEBUG:
-                print("finished pattern")
-            if result[-1] == SPRING:
-                if current_num_idx == (len(spring.numbers)-1) and characters_added == spring.numbers[current_num_idx]:
-                    if DEBUG:
-                        print("  ADDED", result, "TO POSSIBLE PATTERNS!")
-                    patterns.append(result)
-                    return
-            if result[-1] == EMPTY:
-                if current_num_idx == (len(spring.numbers)) and characters_added == 0:
-                    if DEBUG:
-                        print("  ADDED", result, "TO POSSIBLE PATTERNS!")
-                    patterns.append(result)
-                    return
-            if DEBUG:
-                print("failed because pattern was not matched")
-            return
-        if spring.pattern[current_pattern_idx] == MISTERY:
-            if current_num_idx == len(spring.numbers):
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx, 0)
-                return
-            if spring.is_current_number_completed(current_num_idx, characters_added):
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx+1, 0)
-                return
-            if characters_added == 0:
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx, characters_added)
-            self.process_spring_dp(patterns, numbers_by_index, spring, result+SPRING, current_pattern_idx+1, current_num_idx, characters_added+1)
-        if spring.pattern[current_pattern_idx] == EMPTY:
-            if current_num_idx == len(spring.numbers):
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx, 0)
-                return
-            if spring.is_current_number_completed(current_num_idx, characters_added):
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx+1, 0)
-                return
-            elif characters_added == 0:
-                self.process_spring_dp(patterns, numbers_by_index, spring, result+EMPTY, current_pattern_idx+1, current_num_idx, 0)
-                return
-            if DEBUG:
-                print("failed because", result+EMPTY, "would not complete a number with size", spring.numbers[current_num_idx], "and index", current_num_idx)
-            return
-        if spring.pattern[current_pattern_idx] == SPRING:
-            if current_num_idx == len(spring.numbers):
-                if DEBUG:
-                    print("failed because numbers were already and a # was found")
-                return
-            if spring.is_current_number_completed(current_num_idx, characters_added):
-                if DEBUG:
-                    print("failed because", result+SPRING, "would continue a number already completed with size", spring.numbers[current_num_idx], "and index", current_num_idx)
-                return
-            self.process_spring_dp(patterns, numbers_by_index, spring, result+SPRING, current_pattern_idx+1, current_num_idx, characters_added+1)
+        if len(numbers) == 0 and SPRING not in pattern:
+            return 1
         
-        
+        if len(numbers) == 0 or len(pattern) == 0:
+            return 0
 
+        if len(pattern) < (sum(numbers) + len(numbers) - 1):
+            return 0
+
+        current_num = numbers[0]
+        remaining_pattern = pattern[current_num:]
+
+        is_number_valid = EMPTY not in pattern[:current_num]
+        is_end_of_pattern = len(remaining_pattern) == 0
+        is_number_end_separated = is_end_of_pattern or remaining_pattern[0] != SPRING
+
+        possible_next_steps = []
+        if is_number_valid and is_number_end_separated:
+            possible_next_steps.append((remaining_pattern[1:], tuple(numbers[1:])))
+        if pattern[0] != SPRING:
+            possible_next_steps.append((pattern[1:], tuple(numbers)))
+
+        result_count = 0
+        for possible_next_step in possible_next_steps:
+            if possible_next_step not in self.cache:
+                self.cache[possible_next_step] = self.process_spring(possible_next_step)
+            result_count += self.cache[possible_next_step]
+        return result_count
