@@ -1,33 +1,7 @@
-MISTERY = "?"
 SPRING = "#"
 EMPTY = "."
 
-DEBUG = False
-
-class InputExtractor:
-    def extract(self, lines):
-        springs = []
-        for line in lines:
-            pattern, str_numbers = line.split(" ")
-            numbers = [int(str_num) for str_num in str_numbers.split(",")]
-            springs.append((self.repeat_pattern(pattern), self.repeat_numbers(numbers)))
-        return springs
-    
-    def repeat_pattern(self, pattern):
-        repeated_pattern = pattern
-        for _ in range(4):
-            repeated_pattern += MISTERY + pattern
-        return pattern
-    
-    def repeat_numbers(self, numbers):
-        repeated_numbers = []
-        for _ in range(5):
-            repeated_numbers.extend(numbers)
-        return numbers
-
 class WorkingSpringCounter:
-    def __init__(self):
-        self.cache = dict()
 
     def count(self, springs):
         spring_sum = 0
@@ -62,7 +36,8 @@ class WorkingSpringCounter:
 
         result_count = 0
         for possible_next_step in possible_next_steps:
-            if possible_next_step not in self.cache:
-                self.cache[possible_next_step] = self.process_spring(possible_next_step)
-            result_count += self.cache[possible_next_step]
+            result_count += self.process_next_step(possible_next_step)
         return result_count
+    
+    def process_next_step(self, spring_next_step):
+        return self.process_spring(spring_next_step)
