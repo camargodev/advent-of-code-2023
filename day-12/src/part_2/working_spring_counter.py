@@ -34,6 +34,9 @@ class InputExtractor:
         return repeated_numbers
 
 class WorkingSpringCounter:
+    def __init__(self):
+        self.cache = dict()
+
     def count(self, lines):
         springs = InputExtractor().extract(lines)
         spring_sum = 0
@@ -64,7 +67,13 @@ class WorkingSpringCounter:
 
         possible_results = 0
         if is_number_valid and is_number_end_separated:
-            possible_results += self.process_spring_dp(remaining_pattern[1:], numbers[1:])
+            cache_key = (remaining_pattern[1:], tuple(numbers[1:]))
+            if cache_key not in self.cache:
+                self.cache[cache_key] = self.process_spring_dp(remaining_pattern[1:], numbers[1:])
+            possible_results += self.cache[cache_key]
         if pattern[0] != SPRING:
-            possible_results += self.process_spring_dp(pattern[1:], numbers)
+            cache_key = (pattern[1:], tuple(numbers))
+            if cache_key not in self.cache:
+                self.cache[cache_key] = self.process_spring_dp(pattern[1:], numbers)
+            possible_results += self.cache[cache_key]
         return possible_results
