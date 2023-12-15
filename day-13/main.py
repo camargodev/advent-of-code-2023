@@ -1,7 +1,5 @@
-from src.part_1.mirror_finder import MirrorFinder as FirstMirrorFinder
-from src.part_2.mirror_finder import MirrorFinder as SecondMirrorFinder
-
+from src.commons.mirror_finder import MirrorFinder
 if __name__ == "__main__":
-    lines = [line for line in open("day-13/res/debug.txt", "r")]
-    # print(FirstMirrorFinder().find(lines))
-    print(SecondMirrorFinder().find(lines))
+    lines = [line for line in open("day-13/res/input.txt", "r")]
+    print(MirrorFinder().find(lines, allowed_diffences=0))
+    print(MirrorFinder().find(lines, allowed_diffences=1))
