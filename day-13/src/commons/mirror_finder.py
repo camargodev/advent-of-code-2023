@@ -1,7 +1,9 @@
-PALINDROME_NOT_FOUND = -1
+PALINDROME_NOT_FOUND = 0
+TRANSPOSED_GRID_RATIO = 100
 
-class InputExtractor:
-    def extract_grids(self, lines):
+class InputGridExtractor:
+    @staticmethod
+    def extract(lines):
         grids = []
         current_grid = []
         for raw_line in lines:
@@ -13,26 +15,28 @@ class InputExtractor:
             current_grid.append(line)
         grids.append(current_grid)
         return grids
-
+    
+class GridTransposer:
+    @staticmethod
+    def transpose(grid):
+        num_transposed_rows = len(grid[0])
+        transposed_grid = ["" for _ in range(num_transposed_rows)]
+        for line in grid:
+            for char_idx, char in enumerate(line):
+                transposed_grid[char_idx] += char
+        return transposed_grid
 
 class MirrorFinder:
-    def __init__(self):
-        self.input_extractor = InputExtractor()
-
     def find(self, lines, allowed_diffences):
-        grids = self.input_extractor.extract_grids(lines)
-        total_grid_value = 0
-        for grid_idx, grid in enumerate(grids):
-            grid_value = self.find_mirror_by_column(grid, allowed_diffences)
-            if grid_value != PALINDROME_NOT_FOUND:
-                total_grid_value += grid_value
-            transposed_grid = self.transpose_grid(grid)
-            transposed_grid_value = self.find_mirror_by_column(transposed_grid, allowed_diffences)
-            if transposed_grid_value != PALINDROME_NOT_FOUND:
-                total_grid_value += 100 * transposed_grid_value
-        return total_grid_value
+        grids = InputGridExtractor.extract(lines)
+        return sum([self.calculate_grid_value(grid, allowed_diffences) for grid in grids])
     
-    def find_mirror_by_column(self, grid, allowed_diffences):
+    def calculate_grid_value(self, grid, allowed_diffences):
+        grid_value = self.find_mirror_index(grid, allowed_diffences)
+        transposed_grid_value = self.find_mirror_index(GridTransposer.transpose(grid), allowed_diffences)
+        return grid_value + (TRANSPOSED_GRID_RATIO * transposed_grid_value)
+    
+    def find_mirror_index(self, grid, allowed_diffences):
         num_columns = len(grid[0])
         for col_idx in range(1, num_columns):
             if self.count_differences_when_slicing_at_column(grid, col_idx) == allowed_diffences:
@@ -41,7 +45,7 @@ class MirrorFinder:
     
     def count_differences_when_slicing_at_column(self, grid, col_idx):
         differences_count = 0
-        for idx, line in enumerate(grid):
+        for line in grid:
             first_part = line[:col_idx]
             second_part = line[col_idx:]
             min_size = min(len(first_part), len(second_part))
@@ -50,14 +54,5 @@ class MirrorFinder:
             elif len(first_part) > len(second_part):
                 first_part = first_part[::-1][:min_size]
             differences_count += sum(1 for a, b in zip(first_part, second_part) if a != b)
-            # if differences_count > 0:
-            #     return differences_count
         return differences_count
     
-    def transpose_grid(self, grid):
-        num_transposed_rows = len(grid[0])
-        transposed_grid = ["" for _ in range(num_transposed_rows)]
-        for line in grid:
-            for char_idx, char in enumerate(line):
-                transposed_grid[char_idx] += char
-        return transposed_grid
