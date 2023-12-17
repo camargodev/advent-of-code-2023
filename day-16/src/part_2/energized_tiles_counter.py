@@ -42,8 +42,8 @@ class EnergizedTilesCounter:
     def count(self, grid):
         visited = set()
         result = self.calculate_from_source(grid, Tile(RIGHT, 0, 0), visited)
-        for node, value in self.cache.items():
-            print(node, value)
+        # for node, value in self.cache.items():
+        #     print(node, value)
         return result
 
 
@@ -104,16 +104,20 @@ class EnergizedTilesCounter:
     def is_visited(self, visited, node, grid):
         node_value = grid[node.row][node.col]
         if node_value not in {DIAGONAL, INVERSE_DIAGIONAL}:
-            node_without_direction = Tile(None, node.row, node.col)
-            return node_without_direction in visited
+            nodes_for_all_directions = [Tile(direction, node.row, node.col) for direction in {UP,DOWN,LEFT,RIGHT}]
+            for node_for_direction in nodes_for_all_directions:
+                if node_for_direction in visited:
+                    return True
+            return False
+            # return node_without_direction in visited
         return node in visited
 
     def add_to_visited(self, visited, node, grid):
-        node_value = grid[node.row][node.col]
-        if node_value not in {DIAGONAL, INVERSE_DIAGIONAL}:
-            node_without_direction = Tile(None, node.row, node.col)
-            visited.add(node_without_direction)
-            return
+        # node_value = grid[node.row][node.col]
+        # if node_value not in {DIAGONAL, INVERSE_DIAGIONAL}:
+        #     node_without_direction = Tile(None, node.row, node.col)
+        #     visited.add(node_without_direction)
+        #     return
         visited.add(node)
 
 
