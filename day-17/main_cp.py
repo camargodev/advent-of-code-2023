@@ -8,8 +8,8 @@ RIGHT=">"
 
 class MinimalHeatFinder:
 
-    def __init__(self, board, start, end):
-        self.board = board
+    def __init__(self, grid, start, end):
+        self.grid = grid
         self.start = start
         self.end = end
 
@@ -30,9 +30,9 @@ class MinimalHeatFinder:
 
                 for step in range(1, max_steps+1):
                     next_row, next_col = self.get_next(next_row, next_col, next_direction)
-                    if (next_row, next_col) not in self.board:
+                    if not self.is_inside_grid(next_row, next_col):
                         continue
-                    total_heat += self.board[next_row, next_col]
+                    total_heat += self.grid[next_row][next_col]
                     if step >= min_steps:
                         priority_queue.heappush(queue, (total_heat, next_row, next_col, next_direction))
 
@@ -53,9 +53,16 @@ class MinimalHeatFinder:
         if direction == RIGHT:
             return row, col+1
 
+    def is_inside_grid(self, row, col):
+        return row >=0 and row < len(grid) and col >= 0 and col < len(grid[0])
 
 
-grid = {(i,j): int(c) for i,r in enumerate(open("day-17/res/example.txt")) for j,c in enumerate(r.strip())}
-finder = MinimalHeatFinder(grid, (0,0), max(grid))
+class GridEndCalculator:
+    @staticmethod
+    def calculate_coords(lines):
+        return (len(lines)-1, len(lines[0])-1)
+    
+grid = [[int(char) for char in line.replace("\n","")] for line in open("day-17/res/example.txt", "r")]
+finder = MinimalHeatFinder(grid, (0,0), GridEndCalculator.calculate_coords(grid))
 print(finder.find(1, 3))
 print(finder.find(4, 10))
