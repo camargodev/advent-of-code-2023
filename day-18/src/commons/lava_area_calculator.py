@@ -9,18 +9,19 @@ BORDER = "-"
 CORNER = "X"
 
 class LavaAreaCalculator:
+    def __init__(self, instructions_extractor):
+        self.instructions_extractor = instructions_extractor
+
     def calculate(self, lines):
-        instructions = self.extract_instructions(lines)
+        instructions = self.instructions_extractor.extract(lines)
         corners, perimeter = self.trace_area_borders(instructions)
 
         total_area = 0
-        border_set = set()
         for i in range(len(corners)):
             x_a, y_a = corners[i]
             x_b, y_b = corners[(i + 1) % len(corners)] 
             total_area += (x_a * y_b - x_b * y_a)
 
-        # print(abs(total_area)//2, len(borders)//2)
         return abs(total_area)//2 + perimeter//2 + 1
 
     def trace_area_borders(self, instructions):
@@ -29,7 +30,6 @@ class LavaAreaCalculator:
         corners =[(current_x, current_y)]
         perimeter = 0
         for direction, steps in instructions:
-            # for i in range(steps):
             if direction == LEFT:
                 current_y -= steps
             if direction == RIGHT:
@@ -41,10 +41,3 @@ class LavaAreaCalculator:
             perimeter += steps
             corners.append((current_x, current_y))
         return corners, perimeter
-
-    def extract_instructions(self, lines):
-        instructions = []
-        for line in lines:
-            direction, steps, _ = line.split(" ")
-            instructions.append((direction, int(steps)))
-        return instructions
