@@ -8,6 +8,8 @@ DOWN="D"
 BORDER = "-"
 CORNER = "X"
 
+DIRECTION = {0: "R", 1: "D", 2: "L", 3: "U"}
+
 class LavaAreaCalculator:
     def calculate(self, lines):
         instructions = self.extract_instructions(lines)
@@ -45,6 +47,11 @@ class LavaAreaCalculator:
     def extract_instructions(self, lines):
         instructions = []
         for line in lines:
-            direction, steps, _ = line.split(" ")
-            instructions.append((direction, int(steps)))
+            _, _, hex_instruction = line.split(" ")
+            instruction = hex_instruction.replace("(#", "").replace(")", "")
+            hex_number, hex_dir = instruction[:-1], instruction[-1] 
+            direction = DIRECTION[int(hex_dir)]
+            steps = int(hex_number, 16)
+            # print((direction, steps))
+            instructions.append((direction, steps))
         return instructions
