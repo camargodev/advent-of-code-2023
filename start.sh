@@ -1,8 +1,8 @@
 #!/bin/bash
 
-read -p "Enter day number: " daynumber
-read -p "Enter file name (without extension): " filename
-read -p "Enter method name: " methodname
+read -p "$(tput bold)Enter day number: $(tput sgr0)" daynumber
+read -p "$(tput bold)Enter file name (without extension): $(tput sgr0)" filename
+read -p "$(tput bold)Enter method name: $(tput sgr0)" methodname
 
 # Generate class name from filename (capitalize each word, remove underscores, and remove spaces)
 classname=$(echo "${filename}" | tr '_' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2));}1' | tr -d ' ')
@@ -39,6 +39,6 @@ echo "${parts_code}" > "${base_path}/src/part_1/${filename}.py"
 echo "${parts_code}" > "${base_path}/src/part_2/${filename}.py"
 echo "${main_code}" > "${base_path}/main.py"
 
-echo "Directory structure created for ${base_path}, file ${filename}.py created, and main.py filled with custom Python code."
+echo -e "\n$(tput bold)$(tput setaf 2)Folder ${base_path} with files ${filename}.py and main.py created successfully.$(tput sgr0)"
 echo "To execute main.py, run the following command:"
-echo "python3 ${base_path}/main.py"
+echo "$(tput setaf 3)python3 ${base_path}/main.py$(tput sgr0)"
