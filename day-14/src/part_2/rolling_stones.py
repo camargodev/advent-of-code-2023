@@ -7,46 +7,31 @@ SPACE = "."
 
 NUM_LOOPS = 1000000000
 
-class GridTransposer:
-     @staticmethod
-     def transpose(grid):
-        def clear_grid(grid):
-             return [line.replace("\n", "") for line in grid]
+class StoneLoopDetector:
+    def __init__(self):
+        self.stones_order = 1
+        self.loop_start = None
+        self.stone_states = dict()
 
-        grid = clear_grid(grid)
-        num_transposed_rows = len(grid[0])
-        transposed_grid = ["" for _ in range(num_transposed_rows)]
-        for line in grid:
-            for char_idx, char in enumerate(line):
-                transposed_grid[char_idx] += char
-        return transposed_grid
+    def is_loop_detected(self, stones):
+        stones_tuple = self.to_tuple(stones)
+        if stones_tuple in self.stone_states:
+            self.loop_start, _ = self.stone_states[stones_tuple]
+            return True
+        self.stone_states[stones_tuple] = (self.stones_order, self.calculate_total(stones))
+        self.stones_order += 1
+        return False
+    
+    def calculate_total_after_iterations(self, iterations):
+        loop_end = self.stones_order
+        loop_size = (loop_end-self.loop_start)
 
-class RollingStone:
-    def move_like_jeager(self, lines):
-        stones = [[char for char in line] for line in lines]
-        stone_states = dict()
-
-        stones_order = 1
-        loop_start = None
-        for _ in range(NUM_LOOPS):
-            stones = self.full_rotation(stones)
-            stone_tuple = []
-            for line in stones:
-                stone_tuple.append(tuple(line))
-            if tuple(stone_tuple) in stone_states:
-                loop_start, _ = stone_states[tuple(stone_tuple)]
-                break
-            stone_states[tuple(stone_tuple)] = (stones_order, self.calculate_total(stones))
-            stones_order += 1
-
-        loop_end = stones_order
-
-        solution_index = loop_start+((NUM_LOOPS-loop_start) % (loop_end-loop_start))
-        for stone_order, stone_total in stone_states.values():
+        solution_index = self.loop_start + ((iterations-self.loop_start) % loop_size)
+        for stone_order, stone_total in self.stone_states.values():
             if stone_order == solution_index:
                 return stone_total
         return None
-    
+
     def calculate_total(self, stones):
         total = 0
         max_points = len(stones)
@@ -55,6 +40,26 @@ class RollingStone:
             line_points = max_points - line_idx
             total += numbers_of_rolling_stones * line_points
         return total
+
+
+    def to_tuple(self, stones):
+        stone_tuple = []
+        for line in stones:
+            stone_tuple.append(tuple(line))
+        return tuple(stone_tuple)
+
+
+
+class RollingStone:
+    def move_like_jeager(self, lines):
+        stones = [[char for char in line] for line in lines]
+        loop_detector = StoneLoopDetector()
+
+        while not loop_detector.is_loop_detected(stones):
+            stones = self.full_rotation(stones)
+
+        return loop_detector.calculate_total_after_iterations(NUM_LOOPS)
+
     
     def full_rotation(self, stones):
         stones = list(stones)
