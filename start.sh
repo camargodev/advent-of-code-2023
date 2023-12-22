@@ -1,0 +1,14 @@
+read day
+mkdir $day
+cd $day 
+mkdir src 
+mkdir res
+touch main.py 
+cd src 
+mkdir part_1 
+mkdir part_2 
+mkdir commons
+cd ../res 
+touch example.txt
+touch input.txt
+cd ../..
