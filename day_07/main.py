@@ -4,7 +4,7 @@ from src.bet_winnings_calculator import WinningCalculator
 
 
 if __name__ == "__main__":
-    lines = [line for line in open("day-7/res/input.txt", "r")]
+    lines = [line for line in open("day_7/res/input.txt", "r")]
     print(WinningCalculator(FirstBetManager()).calculate(lines))
     print(WinningCalculator(SecondBetManager()).calculate(lines))
 
