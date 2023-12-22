@@ -2,8 +2,10 @@
 
 read -p "Enter day number: " daynumber
 read -p "Enter file name (without extension): " filename
-read -p "Enter class name: " classname
 read -p "Enter method name: " methodname
+
+# Generate class name from filename (capitalize each word, remove underscores, and remove spaces)
+classname=$(echo "${filename}" | tr '_' ' ' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2));}1' | tr -d ' ')
 
 base_path="day_${daynumber}"
 parts_code=$(cat <<EOF
