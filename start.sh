@@ -1,13 +1,20 @@
 #!/bin/bash
 
 read -p "Enter day number: " daynumber
+read -p "Enter file name (without .py): " filename
 
-mkdir -p "day_${daynumber}/src/part_1"
-mkdir -p "day_${daynumber}/src/part_2"
-mkdir -p "day_${daynumber}/src/commons"
-mkdir -p "day_${daynumber}/res"
-touch "day_${daynumber}/res/example.txt"
-touch "day_${daynumber}/res/input.txt"
-touch "day_${daynumber}/main.py"
+base_path="day_${daynumber}"
 
-echo "Directory structure created for day_${daynumber}."
+mkdir -p "${base_path}/src/part_1"
+mkdir -p "${base_path}/src/part_2"
+mkdir -p "${base_path}/src/commons"
+mkdir -p "${base_path}/res"
+
+touch "${base_path}/res/example.txt"
+touch "${base_path}/res/input.txt"
+touch "${base_path}/main.py"
+
+touch "${base_path}/src/part_1/${filename}.py"
+touch "${base_path}/src/part_2/${filename}.py"
+
+echo "Directory structure created for ${base_path} and file ${filename} created in part_1 and part_2."
