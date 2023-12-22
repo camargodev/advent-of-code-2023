@@ -2,8 +2,6 @@ CUBE_STONE = "#"
 ROLLING_STONE = "O"
 SPACE = "."
 
-MAX_POINTS = 10
-
 class GridTransposer:
      @staticmethod
      def transpose(grid):

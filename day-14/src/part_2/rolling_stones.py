@@ -5,7 +5,7 @@ CUBE_STONE = "#"
 ROLLING_STONE = "O"
 SPACE = "."
 
-
+NUM_LOOPS = 1000000000
 
 class GridTransposer:
      @staticmethod
@@ -23,11 +23,31 @@ class GridTransposer:
 
 class RollingStone:
     def move_like_jeager(self, lines):
-        stones = [tuple([char for char in line]) for line in lines]
-        
-        for _ in range(10000000):
-            stones = self.full_rotation(tuple(stones))
+        stones = [[char for char in line] for line in lines]
+        stone_states = dict()
 
+        stones_order = 1
+        loop_start = None
+        for _ in range(NUM_LOOPS):
+            stones = self.full_rotation(stones)
+            stone_tuple = []
+            for line in stones:
+                stone_tuple.append(tuple(line))
+            if tuple(stone_tuple) in stone_states:
+                loop_start, _ = stone_states[tuple(stone_tuple)]
+                break
+            stone_states[tuple(stone_tuple)] = (stones_order, self.calculate_total(stones))
+            stones_order += 1
+
+        loop_end = stones_order
+
+        solution_index = loop_start+((NUM_LOOPS-loop_start) % (loop_end-loop_start))
+        for stone_order, stone_total in stone_states.values():
+            if stone_order == solution_index:
+                return stone_total
+        return None
+    
+    def calculate_total(self, stones):
         total = 0
         max_points = len(stones)
         for line_idx, shifted_stone_line in enumerate(stones):
@@ -36,7 +56,6 @@ class RollingStone:
             total += numbers_of_rolling_stones * line_points
         return total
     
-    @cache
     def full_rotation(self, stones):
         stones = list(stones)
         shifted_stones = self.shift_to_north(stones)
