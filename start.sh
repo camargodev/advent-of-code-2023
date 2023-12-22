@@ -38,3 +38,5 @@ echo "${parts_code}" > "${base_path}/src/part_2/${filename}.py"
 echo "${main_code}" > "${base_path}/main.py"
 
 echo "Directory structure created for ${base_path}, file ${filename}.py created, and main.py filled with custom Python code."
+echo "To execute main.py, run the following command:"
+echo "python3 ${base_path}/main.py"
