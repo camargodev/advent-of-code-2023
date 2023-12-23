@@ -32,7 +32,6 @@ class Workflow:
         accepted_ranges = []
         remaining_ranges = copy.deepcopy(ranges_by_property)
 
-
         for rule in self.rules:
             range_min, range_max = ranges_by_property[rule.property]
             new_ranges = copy.deepcopy(remaining_ranges)
@@ -109,8 +108,6 @@ class WorkflowEvaluator:
         for accepted_ranges in all_accepted_ranges:
             possibilites = 1
             for range_min, range_max in accepted_ranges.values():
-                # if range_max < range_min:
-                #     continue
                 possibilites *= (range_max-range_min+1)
             possibility_count += possibilites
         return possibility_count
